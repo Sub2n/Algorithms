@@ -1,28 +1,31 @@
 function solution(s) {
-  const ans = [];
+  let numberExt = s.replace(/[^0-9,]/g, "");
 
-  let str = s.split(/{|}/).filter(e => {
-    return e !== '' && e !== ',';
-  }).map(e => e.split(',').map(e => +e));
+  let num = numberExt.split(',');
+  if (num.length === 1) return [+num[0]];
 
-  str.sort((a, b) => {
-    return a.length < b.length ? 0 : 1;
-  })
+  let hashed = {};
+  num.forEach(n => {
+    hashed[n] = hashed[n] ? hashed[n] + 1 : 1
+  });
 
-  if (str.length === 1) return str[0];
+  let hashedArr = [];
 
-  ans.push(str[0][0]);
-
-  for (let i = 1; i < str.length; i++) {
-    ans.push(str[i].reduce((a, b) => a + b) - str[i - 1].reduce((a, b) => a + b))
+  for (let key in hashed) {
+    hashedArr.push({
+      key,
+      count: hashed[key]
+    });
   }
 
-  return ans;
+  return hashedArr.sort((a, b) => b.count - a.count).map(({
+    key
+  }) => +key);
 }
 
-// console.log(solution("{{2},{2,1},{2,1,3},{2,1,3,4}}"));
-// console.log(solution("{{1,2,3},{2,1},{1,2,4,3},{2}}"));
-// console.log(solution("{{20,111},{111}}"));
-// console.log(solution("{{123}}"));
+console.log(solution("{{2},{2,1},{2,1,3},{2,1,3,4}}"));
+console.log(solution("{{1,2,3},{2,1},{1,2,4,3},{2}}"));
+console.log(solution("{{20,111},{111}}"));
+console.log(solution("{{123}}"));
 
 // console.log(solution("{{90, 100, 10},{100, 10},{10}}"));
